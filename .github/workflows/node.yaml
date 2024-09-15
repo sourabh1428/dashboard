@@ -1,49 +1,46 @@
-name: Build and Deploy Frontend
+name: Deploy React App to AWS EC2
 
+# This workflow runs on pushes to the main branch
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  deploy:
+    # This job runs on the self-hosted runner, which you've set up on your EC2 instance
+    runs-on: self-hosted
 
     steps:
+    # Step 1: Checkout the latest code from the repo
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v2
 
+    # Step 2: Set up Node.js environment
     - name: Set up Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v2
       with:
-        node-version: '18.x'
-        cache: 'npm'
+        node-version: '16'  # Specify the Node.js version you want to use
 
-    - name: Remove node_modules and package-lock.json
-      run: |
-        rm -rf node_modules
-        rm -f package-lock.json
-
+    # Step 3: Install dependencies
     - name: Install dependencies
-      run: npm install
-
-    - name: Build the frontend
-      run: npm run build
-
-    - name: Deploy to Server
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       run: |
-         # Create private key file
-          echo "$SSH_PRIVATE_KEY" > private_key.pem
-          chmod 600 private_key.pem
+        npm install
 
-          # Verify SSH key validity
-          ssh-keygen -y -f private_key.pem > /dev/null 2>&1 || (echo "Invalid SSH key"; exit 1)
-          
-          # Deploy using rsync
-          rsync -avz -e "ssh -i private_key.pem -o StrictHostKeyChecking=no" ./dist/ ubuntu@ec2-13-201-21-180.ap-south-1.compute.amazonaws.com:/var/www/my-react-app/
-          
-          # Clean up
-          rm private_key.pem
+    # Step 4: Build the React app
+    - name: Build the React app
+      run: |
+        npm run build
+
+    # Step 5: Copy the build files to the Nginx directory
+    - name: Deploy to Nginx
+      run: |
+        # Remove the old build files
+        sudo rm -rf /var/www/html/*
+        # Copy the new build files to the Nginx serving directory
+        sudo cp -r build/* /var/www/html/
+
+    # Step 6: Restart Nginx to apply the new changes
+    - name: Restart Nginx
+      run: |
+        sudo systemctl restart nginx
