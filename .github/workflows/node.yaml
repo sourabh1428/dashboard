@@ -7,39 +7,33 @@ on:
 
 jobs:
   deploy:
-    # Run this job on your self-hosted EC2 runner
     runs-on: self-hosted
 
     steps:
-    # Step 1: Checkout the code from your repository
     - name: Checkout code
       uses: actions/checkout@v2
 
-    # Step 2: Set up Node.js environment
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '16'  # You can specify your preferred Node.js version here
+        node-version: '16'
 
-    # Step 3: Install dependencies
-    - name: Install dependencies
+    # Step: Clean up node_modules and package-lock.json
+    - name: Clean npm cache and install dependencies
       run: |
-        npm i
+        rm -rf node_modules
+        rm package-lock.json
+        npm install
 
-    # Step 4: Build the Vite app
     - name: Build the Vite app
       run: |
         npm run build
 
-    # Step 5: Copy the built files to the Nginx directory
     - name: Deploy to Nginx
       run: |
-        # Remove the old build files
         sudo rm -rf /var/www/html/*
-        # Copy the new build files from Vite to the Nginx serving directory
         sudo cp -r dist/* /var/www/html/
 
-    # Step 6: Restart Nginx to reflect the changes
     - name: Restart Nginx
       run: |
         sudo systemctl restart nginx
