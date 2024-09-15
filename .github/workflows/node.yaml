@@ -1,6 +1,5 @@
-name: Deploy React App to AWS EC2
+name: Deploy Vite React App to AWS EC2
 
-# This workflow runs on pushes to the main branch
 on:
   push:
     branches:
@@ -8,11 +7,11 @@ on:
 
 jobs:
   deploy:
-    # This job runs on the self-hosted runner, which you've set up on your EC2 instance
+    # Run this job on your self-hosted EC2 runner
     runs-on: self-hosted
 
     steps:
-    # Step 1: Checkout the latest code from the repo
+    # Step 1: Checkout the code from your repository
     - name: Checkout code
       uses: actions/checkout@v2
 
@@ -20,27 +19,27 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '16'  # Specify the Node.js version you want to use
+        node-version: '16'  # You can specify your preferred Node.js version here
 
     # Step 3: Install dependencies
     - name: Install dependencies
       run: |
-        npm install
+        npm i
 
-    # Step 4: Build the React app
-    - name: Build the React app
+    # Step 4: Build the Vite app
+    - name: Build the Vite app
       run: |
         npm run build
 
-    # Step 5: Copy the build files to the Nginx directory
+    # Step 5: Copy the built files to the Nginx directory
     - name: Deploy to Nginx
       run: |
         # Remove the old build files
         sudo rm -rf /var/www/html/*
-        # Copy the new build files to the Nginx serving directory
-        sudo cp -r build/* /var/www/html/
+        # Copy the new build files from Vite to the Nginx serving directory
+        sudo cp -r dist/* /var/www/html/
 
-    # Step 6: Restart Nginx to apply the new changes
+    # Step 6: Restart Nginx to reflect the changes
     - name: Restart Nginx
       run: |
         sudo systemctl restart nginx
