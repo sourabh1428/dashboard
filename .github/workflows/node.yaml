@@ -35,7 +35,15 @@ jobs:
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       run: |
-        echo "$SSH_PRIVATE_KEY" > private_key.pem
-        chmod 600 private_key.pem
-        rsync -avz -e "ssh -i private_key.pem -o StrictHostKeyChecking=no" ./dist/ ubuntu@ec2-13-201-21-180.ap-south-1.compute.amazonaws.com:/var/www/my-react-app/
-        rm private_key.pem
+         # Create private key file
+          echo "$SSH_PRIVATE_KEY" > private_key.pem
+          chmod 600 private_key.pem
+
+          # Verify SSH key validity
+          ssh-keygen -y -f private_key.pem > /dev/null 2>&1 || (echo "Invalid SSH key"; exit 1)
+          
+          # Deploy using rsync
+          rsync -avz -e "ssh -i private_key.pem -o StrictHostKeyChecking=no" ./dist/ ubuntu@ec2-13-201-21-180.ap-south-1.compute.amazonaws.com:/var/www/my-react-app/
+          
+          # Clean up
+          rm private_key.pem
