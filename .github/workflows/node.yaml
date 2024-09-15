@@ -8,32 +8,28 @@ on:
 jobs:
   deploy:
     runs-on: self-hosted
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16'
+      - name: Set up Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
 
-    # Step: Clean up node_modules and package-lock.json
-    - name: Clean npm cache and install dependencies
-      run: |
-        rm -rf node_modules
-        rm package-lock.json
-        npm install
+      - name: Install dependencies
+        run: |
+          npm install
 
-    - name: Build the Vite app
-      run: |
-        npm run build
+      - name: Build the Vite app
+        run: |
+          npm run build
 
-    - name: Deploy to Nginx
-      run: |
-        sudo rm -rf /var/www/html/*
-        sudo cp -r dist/* /var/www/html/
+      - name: Deploy to Nginx
+        run: |
+          sudo rm -rf /var/www/html/*
+          sudo cp -r dist/* /var/www/html/
 
-    - name: Restart Nginx
-      run: |
-        sudo systemctl restart nginx
+      - name: Restart Nginx
+        run: |
+          sudo systemctl restart nginx
