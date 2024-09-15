@@ -27,9 +27,11 @@ jobs:
 
       - name: Deploy to Nginx
         run: |
+          echo "Deploying to Nginx"
           sudo rm -rf /var/www/html/*
           sudo cp -r dist/* /var/www/html/
 
       - name: Restart Nginx
         run: |
+          echo "Restarting Nginx"
           sudo systemctl restart nginx
