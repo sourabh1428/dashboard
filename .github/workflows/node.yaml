@@ -1,11 +1,12 @@
-name: Frontend Deployment
+name: Deploy React App
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -15,21 +16,27 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 18
+        node-version: '18'
 
     - name: Install dependencies
       run: npm install
-      working-directory: ~/actions-runner-backend/_work/test/frontend$  # Change this to your frontend directory
 
-    - name: Build frontend
+    - name: Build the React app
       run: npm run build
-      working-directory: ~/actions-runner-backend/_work/test/frontend$  # Change this to your frontend directory
 
-    - name: Copy build to server
-      run: |
-        scp -r ./frontend/build/* user@your-server:/path/to/your/frontend
-        ssh user@your-server 'cd /path/to/your/frontend && pm2 restart frontend'
+    - name: Deploy to EC2
       env:
-        SERVER_USER: ${{ secrets.SERVER_USER }}  # GitHub secret for server username
-        SERVER_HOST: ${{ secrets.SERVER_HOST }}  # GitHub secret for server IP/Host
-        SERVER_PATH: /path/to/your/frontend  # Path on your server
+        SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+      run: |
+        # Start SSH agent and add the private key
+        eval $(ssh-agent -s)
+        echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+
+        # Deploy files to EC2
+        rsync -avz --delete ./build/ ubuntu@ec2-13-201-21-180.ap-south-1.compute.amazonaws.com:/home/ubuntu/my-react-app/
+
+        # SSH into EC2 and restart Nginx to serve the new build
+        ssh -o StrictHostKeyChecking=no ubuntu@ec2-13-201-21-180.ap-south-1.compute.amazonaws.com << 'EOF'
+          sudo cp -r /home/ubuntu/my-react-app/* /var/www/html/
+          sudo systemctl restart nginx
+        EOF
