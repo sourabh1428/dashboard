@@ -1,0 +1,35 @@
+name: Frontend Deployment
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18
+
+    - name: Install dependencies
+      run: npm install
+      working-directory: ~/actions-runner-backend/_work/test/frontend$  # Change this to your frontend directory
+
+    - name: Build frontend
+      run: npm run build
+      working-directory: ~/actions-runner-backend/_work/test/frontend$  # Change this to your frontend directory
+
+    - name: Copy build to server
+      run: |
+        scp -r ./frontend/build/* user@your-server:/path/to/your/frontend
+        ssh user@your-server 'cd /path/to/your/frontend && pm2 restart frontend'
+      env:
+        SERVER_USER: ${{ secrets.SERVER_USER }}  # GitHub secret for server username
+        SERVER_HOST: ${{ secrets.SERVER_HOST }}  # GitHub secret for server IP/Host
+        SERVER_PATH: /path/to/your/frontend  # Path on your server

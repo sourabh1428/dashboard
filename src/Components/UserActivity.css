@@ -1,0 +1,45 @@
+/* UserActivity.css */
+
+.user-activity-container {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    max-width: 600px;
+    margin: 20px auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .error-message {
+    color: red;
+    font-size: 1.5em;
+    margin-bottom: 20px;
+  }
+  
+  .event-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .event-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    color: #333; /* Changed text color for visibility */
+  }
+  
+  .event-list li .event-name {
+    font-weight: bold;
+    color: #333; /* Ensuring the event name is visible */
+  }
+  
+  .event-list li .event-time {
+    color: #555;
+    font-style: italic;
+  }
+  
