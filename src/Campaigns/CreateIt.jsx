@@ -30,7 +30,7 @@ async function postCampaign(type,event,description,name,imageURL){
   try{
 
 
-      const response = await axios.post("https://marketme.sitecampaigns/postCampaign",{
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/campaigns/postCampaign`,{
           type:type,
           event:event,
           description:description,

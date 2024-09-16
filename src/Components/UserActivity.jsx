@@ -7,7 +7,7 @@ import { Spinner } from '@chakra-ui/react'
 import axios from 'axios'
 async function getUserEvents(MMID) {
   try {
-      const response = await axios.get(`https://marketme.site/events/userEvents?MMID=${MMID}`, {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/events/userEvents?MMID=${MMID}`, {
           headers: {
               'x-api-key': `123`
           }});

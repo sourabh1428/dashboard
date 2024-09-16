@@ -7,7 +7,7 @@ import { FaCalendarAlt, FaTrashAlt } from 'react-icons/fa';
 
 async function getParticularCampaign(data) {
   try {
-    const response = await axios.post("https://marketme.site/campaigns/getParticularCampaign", {
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/campaigns/getParticularCampaign`, {
       cid: data
     }, {
       headers: {
@@ -22,7 +22,7 @@ async function getParticularCampaign(data) {
 
 async function deleteCampaign(cid) {
   try {
-    await axios.delete("https://marketme.site/campaigns/deleteCampaign", {
+    await axios.delete(`${import.meta.env.VITE_API_URL}/campaigns/deleteCampaign`, {
       headers: {
            'x-api-key': `123`
       },

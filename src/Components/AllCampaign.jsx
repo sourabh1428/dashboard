@@ -16,7 +16,7 @@ async function getAllCampaigns(){
   
   try{
       
-      const response = await axios.get("https://marketme.site/campaigns/getAllCampaign", {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/campaigns/getAllCampaign`, {
           headers: {
                'x-api-key': `123`
           }});

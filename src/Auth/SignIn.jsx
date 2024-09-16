@@ -22,7 +22,7 @@ const SignIn = () => {
     setLoading(true); // Show loading animation
 
     try {
-      const response = await fetch(`https://marketme.site/auth/signin`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/signin`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' ,
     

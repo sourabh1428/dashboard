@@ -5,7 +5,7 @@ import { Spinner } from '@chakra-ui/react'
 
 async function getAllUsers() {
   try {
-      const response = await fetch("https://marketme.site/users", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/users`, {
         headers: {
          'x-api-key': `123`
       }});
