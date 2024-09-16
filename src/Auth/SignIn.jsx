@@ -20,7 +20,10 @@ const SignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true); // Show loading animation
-
+    console.log(import.meta.env);
+    
+    console.log(`${import.meta.env.VITE_API_URL}/auth/signin`);
+    
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/signin`, {
         method: 'POST',
