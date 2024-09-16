@@ -21,6 +21,11 @@ jobs:
         run: |
           npm install
 
+      - name: Set environment variables
+        run: |
+          echo "VITE_API_URL=https://marketme.site" >> .env
+          echo "API_KEY=123" >> .env
+
       - name: Build the Vite app
         run: |
           npm run build
