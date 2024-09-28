@@ -19,7 +19,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm i
+          npm install
 
       - name: Set environment variables
         run: |
@@ -33,10 +33,14 @@ jobs:
       - name: Deploy to Nginx
         run: |
           echo "Deploying to Nginx"
-          sudo rm -rf /var/www/html/*
-          sudo cp -r dist/* /var/www/html/
+          # Save the PEM file temporarily
+          echo "${{ secrets.EC2_SSH_KEY }}" > my_key.pem
+          chmod 600 my_key.pem
+          
+          # Deploy using SSH
+          scp -o StrictHostKeyChecking=no -i my_key.pem -r dist/* ubuntu@13.202.207.72:/var/www/html/
+          ssh -o StrictHostKeyChecking=no -i my_key.pem ubuntu@13.202.207.72 "sudo systemctl restart nginx"
 
-      - name: Restart Nginx
+      - name: Clean up
         run: |
-          echo "Restarting Nginx"
-          sudo systemctl restart nginx
+          rm my_key.pem
