@@ -9,7 +9,7 @@ const SignUp = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [loading, setLoading] = useState(false); // Loading stated
+  const [loading, setLoading] = useState(false); // Loadin2g stated2
   const navigate = useNavigate();
   const toast = useToast();
 
