@@ -1,13 +1,25 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import path from 'path'; 
+// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  css: {
-    postcss: './postcss.config.js',
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
   },
-  define: {
-    // Optionally define environment variables explicitly if needed
-    'process.env': process.env,
-  },
-});
+  server: {
+    proxy: {
+      '/automation': 'http://localhost:8080',
+      '/api': 'http://localhost:8080',
+      '/users': 'http://localhost:8080',
+      '/events': 'http://localhost:8080',
+      '/track': 'http://localhost:8080',
+      '/auth': 'http://localhost:8080',
+      '/admin': 'http://localhost:8080',
+      '/whatsapp': 'http://localhost:8080',
+      '/campaign': 'http://localhost:8080'
+    }
+  }
+})
